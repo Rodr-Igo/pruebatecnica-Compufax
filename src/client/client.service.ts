@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,8 +13,15 @@ export class ClientService {
     private readonly clientRepository: Repository<ClientEntity>,
   ) {}
   
-  create(createClientDto: CreateClientDto) {
-    return 'This action adds a new client';
+  async create(dto: CreateClientDto): Promise<{ success: string }> {
+    try {
+      const nuevoCliente = this.clientRepository.create(dto);
+      await this.clientRepository.save(nuevoCliente);
+      return { success: 'cliente creado' };
+    } catch (error) {
+      console.error('Error al crear cliente:', error);
+      throw new BadRequestException('No se pudo crear el cliente');
+    }
   }
 
   async findAll() {
@@ -37,7 +44,7 @@ export class ClientService {
       id: cliente.id!,
       nombre: cliente.nombre!,
       apellido: cliente.apellido!,
-      edad: Number(cliente.edad!),
+      edad: cliente.edad!,
       email: cliente.email!,
       fecha_registro: cliente.fecha_registro!,
       cliente_id: cliente.id!,

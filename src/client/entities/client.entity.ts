@@ -10,10 +10,10 @@ export class ClientEntity {
     @Column()
     apellido?:string;
     @Column()
-    edad?:string;
+    edad?:number;
     @Column()
     email?:string;
-    @Column()
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     fecha_registro?:string;
 
     @OneToOne(() => DireccionEntity, direccion => direccion.cliente)

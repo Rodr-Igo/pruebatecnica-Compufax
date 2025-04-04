@@ -9,8 +9,8 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Post()
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientService.create(createClientDto);
+  async create(@Body() dto: CreateClientDto) {
+    return await this.clientService.create(dto);
   }
 
   @Get()
@@ -22,7 +22,7 @@ export class ClientController {
   async findOne(@Param('id') id: number): Promise<ClienteResponseDto> {
     return this.clientService.findOne(+id);
   }
-  
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientService.update(+id, updateClientDto);
