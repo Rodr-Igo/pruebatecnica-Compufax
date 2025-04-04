@@ -4,7 +4,7 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { ClienteResponseDto } from './dto/get-client.dto';
 
-@Controller('client')
+@Controller('clientes')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
