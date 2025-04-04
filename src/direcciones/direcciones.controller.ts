@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, BadRequestException } from '@nestjs/common';
 import { DireccionesService } from './direcciones.service';
 import { CreateDireccioneDto } from './dto/create-direccione.dto';
 import { UpdateDireccioneDto } from './dto/update-direccione.dto';
@@ -7,9 +7,18 @@ import { DireccionResponseDto } from './dto/get-direccione.dto';
 @Controller('direcciones')
 export class DireccionesController {
   constructor(private readonly direccionesService: DireccionesService) {}
+
   @Post()
-  create(@Body() createDireccioneDto: CreateDireccioneDto) {
-    return this.direccionesService.create(createDireccioneDto);
+  async updateDireccion(
+    @Query('id') id: string,
+    @Body() dto: UpdateDireccioneDto,
+  ) {
+    const clienteId = parseInt(id);
+    if (isNaN(clienteId)) {
+      throw new BadRequestException('El parámetro "id" debe ser un número');
+    }
+
+    return this.direccionesService.updateDireccionByClienteId(clienteId, dto);
   }
 
   @Get()
@@ -22,10 +31,6 @@ export class DireccionesController {
     return this.direccionesService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDireccioneDto: UpdateDireccioneDto) {
-    return this.direccionesService.update(+id, updateDireccioneDto);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

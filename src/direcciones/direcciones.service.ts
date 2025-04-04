@@ -5,12 +5,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DireccionEntity } from './entities/direccion.entity';
 import { Repository } from 'typeorm';
 import { DireccionResponseDto } from './dto/get-direccione.dto';
+import { ClientEntity } from 'src/client/entities/client.entity';
 
 @Injectable()
 export class DireccionesService {
   constructor(
     @InjectRepository(DireccionEntity)
     private readonly direccionRepository: Repository<DireccionEntity>,
+    
+    @InjectRepository(ClientEntity)
+    private readonly clienteRepository: Repository<ClientEntity>,
   ) {}
   create(createDireccioneDto: CreateDireccioneDto) {
     return 'This action adds a new direccione';
@@ -43,10 +47,58 @@ export class DireccionesService {
     return `This action returns a #${id} direccione`;
   }
 
-  update(id: number, updateDireccioneDto: UpdateDireccioneDto) {
-    return `This action updates a #${id} direccione`;
+  //Este lo nombre update por 
+  async updateDireccionByClienteId(
+    clienteId: number,
+    dto: UpdateDireccioneDto,
+  ): Promise<{
+    message: string;
+    data: DireccionResponseDto;
+  }> {
+    try {
+      // Verifica que el cliente exista
+      const cliente = await this.clienteRepository.findOne({ where: { id: clienteId } });
+  
+      if (!cliente) {
+        throw new NotFoundException(`Cliente con ID ${clienteId} no encontrado`);
+      }
+  
+      // Busca si ya tiene dirección
+      let direccion = await this.direccionRepository.findOne({
+        where: { cliente: { id: clienteId } },
+        relations: ['cliente'],
+      });
+  
+      if (direccion) {
+        // Actualiza
+        direccion.calle = dto.calle;
+        direccion.ciudad = dto.ciudad;
+        direccion.codigo_postal = dto.codigo_postal;
+      } else {
+        // Crea nueva dirección
+        direccion = this.direccionRepository.create({
+          ...dto,
+          cliente,
+        });
+      }
+  
+      const saved = await this.direccionRepository.save(direccion);
+  
+      return {
+        message: 'Dirección actualizada correctamente',
+        data: {
+          id: saved.id,
+          cliente_id: saved.cliente.id!,
+          calle: saved.calle,
+          ciudad: saved.ciudad,
+          codigo_postal: saved.codigo_postal,
+        },
+      };
+    } catch (error) {
+      console.error('Error al actualizar dirección:', error);
+      throw new InternalServerErrorException('Error al actualizar la dirección');
+    }
   }
-
   remove(id: number) {
     return `This action removes a #${id} direccione`;
   }
