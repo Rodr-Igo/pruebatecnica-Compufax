@@ -27,9 +27,14 @@ export class DireccionesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.direccionesService.findOne(+id);
+async findOne(@Param('id') id: string) {
+  const direccionId = parseInt(id);
+  if (isNaN(direccionId)) {
+    throw new BadRequestException('El parámetro "id" debe ser un número');
   }
+
+  return this.direccionesService.findOne(direccionId);
+}
 
 
   @Delete(':id')

@@ -43,8 +43,28 @@ export class DireccionesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} direccione`;
+  async findOne(id: number): Promise<DireccionResponseDto> {
+    try {
+      const direccion = await this.direccionRepository.findOne({
+        where: { id },
+        relations: ['cliente'],
+      });
+  
+      if (!direccion) {
+        throw new NotFoundException(`Dirección con ID ${id} no encontrada`);
+      }
+  
+      return {
+        id: direccion.id,
+        cliente_id: direccion.cliente?.id ?? null,
+        calle: direccion.calle,
+        ciudad: direccion.ciudad,
+        codigo_postal: direccion.codigo_postal,
+      };
+    } catch (error) {
+      console.error('Error al buscar dirección:', error);
+      throw new InternalServerErrorException('Error al buscar la dirección');
+    }
   }
 
   //Este lo nombre update por 
