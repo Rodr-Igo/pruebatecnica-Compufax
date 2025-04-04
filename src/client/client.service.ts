@@ -16,6 +16,7 @@ export class ClientService {
   async create(dto: CreateClientDto): Promise<{ success: string }> {
     try {
       const nuevoCliente = this.clientRepository.create(dto);
+      nuevoCliente.fecha_registro = new Date();
       await this.clientRepository.save(nuevoCliente);
       return { success: 'cliente creado' };
     } catch (error) {
@@ -39,14 +40,14 @@ export class ClientService {
     }
   
     const direccion = cliente.direccion;
-  
+
     return {
       id: cliente.id!,
       nombre: cliente.nombre!,
       apellido: cliente.apellido!,
       edad: cliente.edad!,
       email: cliente.email!,
-      fecha_registro: cliente.fecha_registro!,
+      fecha_registro: new Date().toDateString(),
       cliente_id: cliente.id!,
       calle: direccion?.calle ?? null,
       ciudad: direccion?.ciudad ?? null,

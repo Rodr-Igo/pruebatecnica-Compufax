@@ -13,8 +13,8 @@ export class ClientEntity {
     edad?:number;
     @Column()
     email?:string;
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    fecha_registro?:string;
+    @Column({ type: 'date', default: () => 'CURRENT_DATE' })
+    fecha_registro: Date;
 
     @OneToOne(() => DireccionEntity, direccion => direccion.cliente)
     direccion: DireccionEntity;
