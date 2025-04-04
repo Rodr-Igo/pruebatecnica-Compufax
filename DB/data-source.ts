@@ -14,7 +14,7 @@ export const dataSourceOptions:DataSourceOptions={
       database: process.env.DB_DATABASE,
       entities: [ClientEntity],
       //This should be false in production
-      synchronize: true,
+      synchronize: false,
 }
 
 const dataSource = new DataSource(dataSourceOptions);

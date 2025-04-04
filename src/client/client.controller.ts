@@ -13,8 +13,8 @@ export class ClientController {
   }
 
   @Get()
-  findAll() {
-    return this.clientService.findAll();
+  async findAll() {
+    return await this.clientService.findAll();
   }
 
   @Get(':id')
