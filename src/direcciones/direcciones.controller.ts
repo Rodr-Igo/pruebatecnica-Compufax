@@ -2,18 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { DireccionesService } from './direcciones.service';
 import { CreateDireccioneDto } from './dto/create-direccione.dto';
 import { UpdateDireccioneDto } from './dto/update-direccione.dto';
+import { DireccionResponseDto } from './dto/get-direccione.dto';
 
 @Controller('direcciones')
 export class DireccionesController {
   constructor(private readonly direccionesService: DireccionesService) {}
-
   @Post()
   create(@Body() createDireccioneDto: CreateDireccioneDto) {
     return this.direccionesService.create(createDireccioneDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<DireccionResponseDto[]> {
     return this.direccionesService.findAll();
   }
 
