@@ -1,16 +1,20 @@
-import { IsString, IsInt, IsOptional, IsDate } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class ItemDto {
+    @IsString()
+    producto: string;
+  
+    @IsInt()
+    cantidad: number;
+  }
 
 export class CreateOrdenDto {
-  @IsString()
-  producto: string;
-
-  @IsInt()
-  cantidad: number;
-
-  @IsOptional()
-  @IsDate()
-  fecha_pedido?: Date;
-
-  @IsString()
-  folio: string;
+    @IsInt()
+    cliente_id: number;
+  
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ItemDto)
+    items: ItemDto[];
 }

@@ -5,6 +5,9 @@ import { ClientEntity } from 'src/client/entities/client.entity';
 export class OrdenEntity {
   @PrimaryGeneratedColumn()
   id: number;
+  
+  @Column()
+  cliente_id: number;
 
   @Column()
   producto: string;
@@ -12,13 +15,13 @@ export class OrdenEntity {
   @Column()
   cantidad: number;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   fecha_pedido: Date;
 
   @Column()
   folio: string;
 
-  @ManyToOne(() => ClientEntity, { nullable: false })
+  @ManyToOne(() => ClientEntity, (cliente) => cliente.ordenes, {eager: false, nullable: false,})
   @JoinColumn({ name: 'cliente_id' })
   cliente: ClientEntity;
 }

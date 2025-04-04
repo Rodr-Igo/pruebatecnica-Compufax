@@ -11,18 +11,10 @@ export class OrdenesController {
   async findAll() {
     return this.ordenesService.findAll();
   }
-
-  @Post()
-  async create(
-    @Query('id') id: string,
-    @Body() dto: CreateOrdenDto,
-  ) {
-    const clienteId = parseInt(id);
-    if (isNaN(clienteId)) {
-      throw new BadRequestException('El parámetro "id" debe ser un número');
-    }
   
-    return this.ordenesService.create(clienteId, dto);
+  @Post()
+  async create(@Body() dto: CreateOrdenDto,) {
+    return this.ordenesService.CreateOrdenDto(dto);
   }
 
   @Get(':id')

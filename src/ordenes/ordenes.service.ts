@@ -5,12 +5,17 @@ import { UpdateOrdeneDto } from './dto/update-ordene.dto';
 import { OrdenEntity  } from 'src/ordenes/entities/ordene.entity';
 import { OrdenResponseDto  } from './dto/orden-response.dto';
 import { CreateOrdenDto } from './dto/create-orden.dto';
+import { randomBytes } from 'crypto';
+import { ClientEntity } from 'src/client/entities/client.entity';
 
 @Injectable()
 export class OrdenesService {
   constructor(
     @InjectRepository(OrdenEntity)
     private readonly ordenRepository: Repository<OrdenEntity>,
+
+    @InjectRepository(ClientEntity)
+        private readonly clienteRepository: Repository<ClientEntity>,
   ) {}
 
   async findAll(): Promise<OrdenResponseDto[]> {
@@ -93,8 +98,35 @@ export class OrdenesService {
     }
   }
 
-  create(clienteId: number, dto: CreateOrdenDto){
-    return `This action returns a #${clienteId} ordene`;
+  async CreateOrdenDto(dto: CreateOrdenDto): Promise<{ folio: string }> {
+    try {
+      const cliente = await this.clienteRepository.findOne({
+        where: { id: dto.cliente_id },
+      });
+  
+      if (!cliente) {
+        throw new NotFoundException(`Cliente con ID ${dto.cliente_id} no encontrado`);
+      }
+  
+      const folio = 'TEST' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  
+      const ordenes = dto.items.map((item) => {
+        return this.ordenRepository.create({
+          cliente: { id: dto.cliente_id },
+          producto: item.producto,
+          cantidad: item.cantidad,
+          folio,
+          fecha_pedido: new Date(),
+        });
+      });
+  
+      await this.ordenRepository.save(ordenes);
+  
+      return { folio };
+    } catch (error) {
+      console.error('Error al crear orden:', error);
+      throw new InternalServerErrorException('Error al registrar la orden del cliente');
+    }
   }
 
   update(id: number, updateOrdeneDto: UpdateOrdeneDto) {
