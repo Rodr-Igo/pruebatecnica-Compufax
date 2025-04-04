@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { ClienteResponseDto } from './dto/get-client.dto';
 
 @Controller('client')
 export class ClientController {
@@ -18,10 +19,10 @@ export class ClientController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return await this.clientService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<ClienteResponseDto> {
+    return this.clientService.findOne(+id);
   }
-
+  
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientService.update(+id, updateClientDto);
