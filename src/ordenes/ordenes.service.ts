@@ -26,6 +26,8 @@ export class OrdenesService {
       return ordenes.map((orden) => ({
         id: orden.id,
         cliente_id: orden.cliente?.id ?? null,
+        nombre_cliente: orden.cliente?.nombre ?? '',
+        apellido_cliente: orden.cliente?.apellido ?? '',
         producto: orden.producto,
         cantidad: orden.cantidad,
         fecha_pedido: orden.fecha_pedido ?? null,
@@ -37,12 +39,35 @@ export class OrdenesService {
     }
   }
 
-  create(clienteId: number, dto: CreateOrdenDto){
-    return `This action returns a #${clienteId} ordene`;
+  async findByClienteId(clienteId: number): Promise<OrdenResponseDto[]> {
+    try {
+      const ordenes = await this.ordenRepository.find({
+        where: { cliente: { id: clienteId } },
+        relations: ['cliente'],
+      });
+  
+      if (!ordenes || ordenes.length === 0) {
+        throw new NotFoundException(`No se encontraron órdenes para el cliente con ID ${clienteId}`);
+      }
+  
+      return ordenes.map((orden) => ({
+        id: orden.id,
+        cliente_id: orden.cliente?.id ?? null,
+        nombre_cliente: orden.cliente?.nombre ?? '',
+        apellido_cliente: orden.cliente?.apellido ?? '',
+        producto: orden.producto,
+        cantidad: orden.cantidad,
+        fecha_pedido: orden.fecha_pedido ?? null,
+        folio: orden.folio,
+      }));
+    } catch (error) {
+      console.error('Error al buscar órdenes por cliente:', error);
+      throw new InternalServerErrorException('Error al obtener las órdenes del cliente');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ordene`;
+  create(clienteId: number, dto: CreateOrdenDto){
+    return `This action returns a #${clienteId} ordene`;
   }
 
   update(id: number, updateOrdeneDto: UpdateOrdeneDto) {

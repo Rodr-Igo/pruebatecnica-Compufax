@@ -26,9 +26,14 @@ export class OrdenesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordenesService.findOne(+id);
+  async findByClienteId(@Param('id') id: string) {
+  const clienteId = parseInt(id);
+  if (isNaN(clienteId)) {
+    throw new BadRequestException('El parámetro "id" debe ser un número');
   }
+
+  return this.ordenesService.findByClienteId(clienteId);
+}
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrdeneDto: UpdateOrdeneDto) {
