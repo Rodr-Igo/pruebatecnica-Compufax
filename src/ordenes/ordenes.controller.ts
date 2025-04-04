@@ -28,12 +28,16 @@ export class OrdenesController {
   @Get(':id')
   async findByClienteId(@Param('id') id: string) {
   const clienteId = parseInt(id);
-  if (isNaN(clienteId)) {
-    throw new BadRequestException('El parámetro "id" debe ser un número');
+    if (isNaN(clienteId)) {
+      throw new BadRequestException('El parámetro "id" debe ser un número');
+    }
+    return this.ordenesService.findByClienteId(clienteId);
   }
 
-  return this.ordenesService.findByClienteId(clienteId);
-}
+  @Get('folio/:folio')
+  async findByFolio(@Param('folio') folio: string) {
+    return this.ordenesService.findByFolio(folio);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrdeneDto: UpdateOrdeneDto) {

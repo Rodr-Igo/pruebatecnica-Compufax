@@ -66,6 +66,33 @@ export class OrdenesService {
     }
   }
 
+  async findByFolio(folio: string): Promise<OrdenResponseDto[]> {
+    try {
+      const ordenes = await this.ordenRepository.find({
+        where: { folio },
+        relations: ['cliente'],
+      });
+  
+      if (!ordenes || ordenes.length === 0) {
+        throw new NotFoundException(`No se encontraron órdenes con el folio "${folio}"`);
+      }
+  
+      return ordenes.map((orden) => ({
+        id: orden.id,
+        cliente_id: orden.cliente?.id ?? null,
+        nombre_cliente: orden.cliente?.nombre ?? '',
+        apellido_cliente: orden.cliente?.apellido ?? '',
+        producto: orden.producto,
+        cantidad: orden.cantidad,
+        fecha_pedido: orden.fecha_pedido ?? null,
+        folio: orden.folio,
+      }));
+    } catch (error) {
+      console.error('Error al obtener órdenes por folio:', error);
+      throw new InternalServerErrorException('Error al obtener órdenes por folio');
+    }
+  }
+
   create(clienteId: number, dto: CreateOrdenDto){
     return `This action returns a #${clienteId} ordene`;
   }
