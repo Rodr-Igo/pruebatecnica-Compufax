@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateDireccioneDto } from './dto/create-direccione.dto';
 import { UpdateDireccioneDto } from './dto/update-direccione.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,17 +17,26 @@ export class DireccionesService {
   }
 
   async findAll(): Promise<DireccionResponseDto[]> {
-    const direcciones = await this.direccionRepository.find({
-      relations: ['cliente'],
-    });
+    try {
+      const direcciones = await this.direccionRepository.find({
+        relations: ['cliente'],
+      });
 
-    return direcciones.map((direccion) => ({
-      id: direccion.id,
-      cliente_id: direccion.cliente?.id ?? null,
-      calle: direccion.calle,
-      ciudad: direccion.ciudad,
-      codigo_postal: direccion.codigo_postal,
-    }));
+      if (!direcciones || direcciones.length === 0) {
+        throw new NotFoundException('No se encontraron direcciones registradas');
+      }
+
+      return direcciones.map((direccion) => ({
+        id: direccion.id,
+        cliente_id: direccion.cliente?.id ?? null,
+        calle: direccion.calle,
+        ciudad: direccion.ciudad,
+        codigo_postal: direccion.codigo_postal,
+      }));
+    } catch (error) {
+      console.error('Error al obtener direcciones:', error);
+      throw new InternalServerErrorException('Error al obtener direcciones');
+    }
   }
 
   findOne(id: number) {
