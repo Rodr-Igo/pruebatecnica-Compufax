@@ -33,6 +33,7 @@ export class DireccionesService {
       return direcciones.map((direccion) => ({
         id: direccion.id,
         cliente_id: direccion.cliente?.id ?? null,
+      nombre_cliente: direccion.cliente?.nombre ?? null,
         calle: direccion.calle,
         ciudad: direccion.ciudad,
         codigo_postal: direccion.codigo_postal,
@@ -50,13 +51,14 @@ export class DireccionesService {
         relations: ['cliente'],
       });
   
-      if (!direccion) {
-        throw new NotFoundException(`Dirección con ID ${id} no encontrada`);
+      if (!direccion || !direccion.cliente) {
+        throw new NotFoundException(`Dirección con ID ${id} no encontrada o no tiene cliente asociado`);
       }
   
       return {
         id: direccion.id,
-        cliente_id: direccion.cliente?.id ?? null,
+        cliente_id: direccion.cliente?.id!,
+        nombre_cliente: direccion.cliente.nombre!,
         calle: direccion.calle,
         ciudad: direccion.ciudad,
         codigo_postal: direccion.codigo_postal,
@@ -109,6 +111,7 @@ export class DireccionesService {
         data: {
           id: saved.id,
           cliente_id: saved.cliente.id!,
+          nombre_cliente: direccion.cliente.nombre!,
           calle: saved.calle,
           ciudad: saved.ciudad,
           codigo_postal: saved.codigo_postal,
@@ -119,6 +122,7 @@ export class DireccionesService {
       throw new InternalServerErrorException('Error al actualizar la dirección');
     }
   }
+
   remove(id: number) {
     return `This action removes a #${id} direccione`;
   }
