@@ -1,5 +1,4 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreateDireccioneDto } from './dto/create-direccione.dto';
 import { UpdateDireccioneDto } from './dto/update-direccione.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DireccionEntity } from './entities/direccion.entity';
@@ -16,9 +15,6 @@ export class DireccionesService {
     @InjectRepository(ClientEntity)
     private readonly clienteRepository: Repository<ClientEntity>,
   ) {}
-  create(createDireccioneDto: CreateDireccioneDto) {
-    return 'This action adds a new direccione';
-  }
 
   async findAll(): Promise<DireccionResponseDto[]> {
     try {

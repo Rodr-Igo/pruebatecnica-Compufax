@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientEntity } from 'src/client/entities/client.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DireccionEntity, ClientEntity])],
+  imports: [TypeOrmModule.forFeature([DireccionEntity, ClientEntity,])],
   controllers: [DireccionesController],
   providers: [DireccionesService],
 })
