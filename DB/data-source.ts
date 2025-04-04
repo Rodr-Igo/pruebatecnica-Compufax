@@ -2,6 +2,7 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv'
 import { ClientEntity } from 'src/client/entities/client.entity'
+import { DireccionEntity } from 'src/direcciones/entities/direccion.entity';
 
 config()
 
@@ -12,7 +13,7 @@ export const dataSourceOptions:DataSourceOptions={
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [ClientEntity],
+      entities: [ClientEntity, DireccionEntity],
       //This should be false in production
       synchronize: false,
 }

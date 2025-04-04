@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
-import { ClientEntity } from 'src/client/entities/client.entity'; // o ajusta la ruta
+import { ClientEntity } from 'src/client/entities/client.entity';
 
-@Entity('direcciones') // o como se llame tu tabla real
+@Entity('direcciones')
 export class DireccionEntity {
   @PrimaryGeneratedColumn()
   id: number;

@@ -18,8 +18,8 @@ export class ClientController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.clientService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return await this.clientService.findOne(+id);
   }
 
   @Patch(':id')

@@ -20,8 +20,11 @@ export class ClientService {
     return await this.clientRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} client`;
+  async findOne(id: number) {
+    return await this.clientRepository.findOne({
+      where: { id },
+      relations: ['direccion'],
+    });
   }
 
   update(id: number, updateClientDto: UpdateClientDto) {

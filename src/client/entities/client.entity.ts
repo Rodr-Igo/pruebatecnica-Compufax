@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { DireccionEntity } from 'src/direcciones/entities/direccion.entity';
 
 @Entity('clientes')
 export class ClientEntity {
@@ -14,4 +15,7 @@ export class ClientEntity {
     email?:string;
     @Column()
     fecha_registro?:string;
+
+    @OneToOne(() => DireccionEntity, direccion => direccion.cliente)
+    direccion: DireccionEntity;
 }
